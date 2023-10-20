@@ -32,6 +32,9 @@ void mostrarUno(nodoArbol* arbol);
 nodoArbol* buscarDatoArbol (nodoArbol* arbol,int legajo);
 nodoArbol* buscarDatoArbolPorNombre (nodoArbol* arbol,char nombre[]);
 int alturaArbol (nodoArbol* arbol);
+int cantDeNodo (nodoArbol* arbol);
+int cantHojas (nodoArbol* arbol);
+
 //simple
 nodoSimple* pasarDatos(nodoArbol* arbol,nodoSimple* lista);
 void mostrarListaSimple(nodoSimple* lista);
@@ -75,8 +78,17 @@ int main()
     int alturaDelArbol;
     alturaDelArbol= alturaArbol(arbol);
 
-    printf("%i", alturaDelArbol);
+    printf("ALTURA: %i\n", alturaDelArbol);
 
+    int cantNodos;
+    cantNodos= cantDeNodo(arbol);
+     printf("CANTIDAD DE NODOS: %i\n", cantNodos);
+     
+     int cantidadHojas;
+     cantidadHojas= cantHojas(arbol);
+     printf("CANTIDAD DE HOJAS: %i", cantidadHojas);
+     
+     
 
     return 0;
 }
@@ -287,17 +299,58 @@ nodoArbol* buscarDatoArbolPorNombre (nodoArbol* arbol,char nombre[])
 
 int alturaArbol (nodoArbol* arbol)
 {
-    int rta=1;
+    int rta;
+    int rta2;
 
-    if(arbol==NULL)
+    if(arbol!=NULL)
     {
-        rta=0;
-    }else
-    {
-        rta= rta+alturaArbol(arbol->derec);
-        rta= rta+alturaArbol(arbol->izq);
+        rta=1+alturaArbol(arbol->izq);
+        rta2=1+alturaArbol(arbol->derec);
+
     }
+
+    if(rta<rta2)
+    rta=rta2;
+ 
 
 
 return rta;
 }
+
+int cantDeNodo (nodoArbol* arbol)
+{
+    int rta=1;
+
+    if(arbol ==NULL)
+    {
+        rta=0;
+    }
+    else
+    {
+        rta= rta+cantDeNodo(arbol->derec)+ cantDeNodo(arbol->izq);
+    }
+
+return rta;
+}
+
+
+int cantHojas (nodoArbol* arbol)
+{
+    int i=0;
+
+    if(arbol!=NULL)
+    {
+        if(arbol->izq==NULL && arbol->derec==NULL)
+        {
+            i=1;
+        }
+        else
+        {
+            i=i+cantHojas(arbol->izq);
+            i=i+cantHojas(arbol->derec);
+        }
+    }
+
+    return i ;
+}
+
