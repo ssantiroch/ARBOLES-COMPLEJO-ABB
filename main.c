@@ -3,10 +3,11 @@
 #include <string.h>
 
 
-typedef struct {
-     int legajo;
-     char nombre[20];
-     int edad;
+typedef struct
+{
+    int legajo;
+    char nombre[20];
+    int edad;
 } persona;
 
 typedef struct nodoArbol
@@ -28,7 +29,9 @@ nodoArbol* agregarAlArbolPorLegajo (nodoArbol* arbol, nodoArbol* nuevoNodo);
 nodoArbol* cargarArbol (nodoArbol* arbol);
 void mostrarArbolPersona(nodoArbol* arbol);
 void mostrarUno(nodoArbol* arbol);
-
+nodoArbol* buscarDatoArbol (nodoArbol* arbol,int legajo);
+nodoArbol* buscarDatoArbolPorNombre (nodoArbol* arbol,char nombre[]);
+int alturaArbol (nodoArbol* arbol);
 //simple
 nodoSimple* pasarDatos(nodoArbol* arbol,nodoSimple* lista);
 void mostrarListaSimple(nodoSimple* lista);
@@ -36,7 +39,7 @@ void mostrarUnoSimple(nodoSimple* lista);
 
 
 
-///             Árbol Binario de Búsqueda (ABB)
+///             Ãrbol Binario de BÃºsqueda (ABB)
 
 int main()
 {
@@ -46,20 +49,33 @@ int main()
 
     mostrarArbolPersona(arbol);
 
-    printf("\nEJERCICIO PASAR DATOS:");
+//    printf("\nEJERCICIO PASAR DATOS:");
+//
+//    nodoSimple* lista = NULL;
+//    lista=pasarDatos(arbol,lista);
+//
+//    printf("\nLISTA:");
+//    mostrarListaSimple(lista);
 
-    nodoSimple* lista = NULL;
-    lista=pasarDatos(arbol,lista);
+//    int legajoBuscar;
+//    printf("\nIngrese el legajo a buscar: ");
+//    scanf("%i",&legajoBuscar);
+//
+//    nodoArbol* rta= buscarDatoArbol(arbol,legajoBuscar);
+//    mostrarUno(rta);
+//
+//    char nombreBuscar[20];
+//    printf("\nIngrese el nombre a buscar: ");
+//    scanf("%s", nombreBuscar);
+//
+//    nodoArbol* rtaNombre= buscarDatoArbolPorNombre(arbol,nombreBuscar);
+//    mostrarUno(rtaNombre);
 
-    printf("%s", lista->dato.nombre);
 
-    printf("\nLISTA:");
-    mostrarListaSimple(lista);
+    int alturaDelArbol;
+    alturaDelArbol= alturaArbol(arbol);
 
-
-
-
-
+    printf("%i", alturaDelArbol);
 
 
     return 0;
@@ -92,7 +108,7 @@ nodoArbol* crearNodo(persona informacion)
     aux->derec=NULL;
     aux->izq=NULL;
 
-return aux;
+    return aux;
 }
 
 nodoArbol* agregarAlArbolPorLegajo (nodoArbol* arbol, nodoArbol* nuevoNodo)
@@ -101,14 +117,16 @@ nodoArbol* agregarAlArbolPorLegajo (nodoArbol* arbol, nodoArbol* nuevoNodo)
     {
         arbol=nuevoNodo;
 
-    }else if (nuevoNodo->dato.legajo <= arbol->dato.legajo)
+    }
+    else if (nuevoNodo->dato.legajo <= arbol->dato.legajo)
     {
         arbol->izq= agregarAlArbolPorLegajo(arbol->izq, nuevoNodo);
-    }else
+    }
+    else
     {
         arbol->derec= agregarAlArbolPorLegajo(arbol->derec, nuevoNodo);
     }
- return arbol;
+    return arbol;
 }
 
 
@@ -123,9 +141,9 @@ nodoArbol* cargarArbol (nodoArbol* arbol)
         printf("NOMBRE: ");
         fflush(stdin);
         gets(informacion.nombre);
-        printf("\nEDAD:");
+        printf("EDAD:");
         scanf("%i", &informacion.edad);
-        printf("\nLEGAJO:");
+        printf("LEGAJO:");
         scanf("%i", &informacion.legajo);
 
         nodoArbol* nuevo= crearNodo(informacion);
@@ -138,7 +156,7 @@ nodoArbol* cargarArbol (nodoArbol* arbol)
 
     }
 
-return arbol;
+    return arbol;
 }
 
 
@@ -154,10 +172,10 @@ void mostrarArbolPersona(nodoArbol* arbol)
 
 void mostrarUno(nodoArbol* arbol)
 {
-        printf("NOMBRE: %s - ", arbol->dato.nombre);
-        printf("EDAD:%i - ", arbol->dato.edad);
-        printf("LEGAJO:%i - ", arbol->dato.legajo);
-        printf("\n");
+    printf("NOMBRE: %s - ", arbol->dato.nombre);
+    printf("\tEDAD:%i - ", arbol->dato.edad);
+    printf("\tLEGAJO:%i - ", arbol->dato.legajo);
+    printf("\n");
 }
 
 nodoSimple* crearNodoSimple(persona info)
@@ -210,7 +228,76 @@ void mostrarListaSimple(nodoSimple* lista)
 void mostrarUnoSimple(nodoSimple* lista)
 {
     printf("\nNOMBRE: %s", lista->dato.nombre);
-    printf("EDAD: %i", lista->dato.edad);
-    printf("LEGAJO: %i", lista->dato.legajo);
+    printf("\tEDAD: %i", lista->dato.edad);
+    printf("\tLEGAJO: %i", lista->dato.legajo);
 }
 
+
+
+nodoArbol* buscarDatoArbol (nodoArbol* arbol,int legajo)
+{
+    nodoArbol* rta;
+
+    if(arbol !=NULL)
+    {
+        if(arbol->dato.legajo== legajo)
+        {
+            rta=arbol;
+        }
+        else
+        {
+            if(legajo >= arbol->dato.legajo)
+               rta= buscarDatoArbol(arbol->derec, legajo);
+            else
+               rta= buscarDatoArbol(arbol->izq, legajo);
+        }
+    }
+
+
+
+    return rta;
+}
+
+nodoArbol* buscarDatoArbolPorNombre (nodoArbol* arbol,char nombre[])
+{
+    nodoArbol* rta;
+
+    if(arbol !=NULL)
+    {
+        if(strcmp(arbol->dato.nombre, nombre)==0)
+        {
+            rta=arbol;
+        }
+        else
+        {
+            if(strcmp(nombre,arbol->dato.nombre)<0)
+               rta= buscarDatoArbolPorNombre(arbol->derec, nombre);
+            else
+               rta= buscarDatoArbolPorNombre(arbol->izq, nombre);
+        }
+    }
+
+
+
+    return rta;
+}
+
+
+
+
+int alturaArbol (nodoArbol* arbol)
+{
+    int rta=1;
+
+    if(arbol==NULL)
+    {
+        rta=0;
+    }else
+    {
+        rta= rta+alturaArbol(arbol->derec);
+        rta= rta+alturaArbol(arbol->izq);
+    }
+
+
+return rta;
+}
