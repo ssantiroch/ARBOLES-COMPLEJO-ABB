@@ -23,7 +23,7 @@ typedef struct
     struct nodoSimple* siguiente;
 } nodoSimple;
 
-
+nodoArbol* iniclista();
 nodoArbol* crearNodo(persona informacion);
 nodoArbol* agregarAlArbolPorLegajo (nodoArbol* arbol, nodoArbol* nuevoNodo);
 nodoArbol* cargarArbol (nodoArbol* arbol);
@@ -34,6 +34,9 @@ nodoArbol* buscarDatoArbolPorNombre (nodoArbol* arbol,char nombre[]);
 int alturaArbol (nodoArbol* arbol);
 int cantDeNodo (nodoArbol* arbol);
 int cantHojas (nodoArbol* arbol);
+nodoArbol* borrarHojas (nodoArbol* arbol, int legajoBorrar);
+nodoArbol* nodoMasIzquierda(nodoArbol* arbol, nodoArbol* aux);
+
 
 //simple
 nodoSimple* pasarDatos(nodoArbol* arbol,nodoSimple* lista);
@@ -47,7 +50,7 @@ void mostrarUnoSimple(nodoSimple* lista);
 int main()
 {
 
-    nodoArbol* arbol =NULL;
+    nodoArbol* arbol = iniclista();;
     arbol=cargarArbol(arbol);
 
     mostrarArbolPersona(arbol);
@@ -75,25 +78,34 @@ int main()
 //    mostrarUno(rtaNombre);
 
 
-    int alturaDelArbol;
-    alturaDelArbol= alturaArbol(arbol);
+//    int alturaDelArbol;
+//    alturaDelArbol= alturaArbol(arbol);
+//
+//    printf("ALTURA: %i\n", alturaDelArbol);
+//
+//    int cantNodos;
+//    cantNodos= cantDeNodo(arbol);
+//    printf("CANTIDAD DE NODOS: %i\n", cantNodos);
+//
+//    int cantidadHojas;
+//    cantidadHojas= cantHojas(arbol);
+//    printf("CANTIDAD DE HOJAS: %i", cantidadHojas);
 
-    printf("ALTURA: %i\n", alturaDelArbol);
+    int legajoBorrar = 10;
+    arbol= borrarHojas (arbol, legajoBorrar);
+    printf("\nNODO BORRADO: \n");
+    mostrarArbolPersona(arbol);
 
-    int cantNodos;
-    cantNodos= cantDeNodo(arbol);
-     printf("CANTIDAD DE NODOS: %i\n", cantNodos);
-     
-     int cantidadHojas;
-     cantidadHojas= cantHojas(arbol);
-     printf("CANTIDAD DE HOJAS: %i", cantidadHojas);
-     
-     
+    nodoArbol* masIzq= nodoMasIzquierda(arbol->derec, masIzq);
+    printf("\n %i", masIzq->dato.legajo);
 
     return 0;
 }
 
-
+nodoArbol* iniclista()
+{
+    return NULL;
+}
 
 
 
@@ -146,24 +158,19 @@ nodoArbol* agregarAlArbolPorLegajo (nodoArbol* arbol, nodoArbol* nuevoNodo)
 nodoArbol* cargarArbol (nodoArbol* arbol)
 {
     persona informacion;
-    char op='s';
 
-    while(op=='s')
+    for (int i=0; i<6 ; i++)
     {
-        printf("NOMBRE: ");
-        fflush(stdin);
-        gets(informacion.nombre);
-        printf("EDAD:");
-        scanf("%i", &informacion.edad);
+//        printf("NOMBRE: ");
+//        fflush(stdin);
+//        gets(informacion.nombre);
+//        printf("EDAD:");
+//        scanf("%i", &informacion.edad);
         printf("LEGAJO:");
         scanf("%i", &informacion.legajo);
 
         nodoArbol* nuevo= crearNodo(informacion);
         arbol= agregarAlArbolPorLegajo(arbol, nuevo);
-
-        printf("\nSEGUIR S/N:");
-        fflush(stdin);
-        scanf("%c",&op);
 
 
     }
@@ -239,8 +246,8 @@ void mostrarListaSimple(nodoSimple* lista)
 
 void mostrarUnoSimple(nodoSimple* lista)
 {
-    printf("\nNOMBRE: %s", lista->dato.nombre);
-    printf("\tEDAD: %i", lista->dato.edad);
+//    printf("\nNOMBRE: %s", lista->dato.nombre);
+//    printf("\tEDAD: %i", lista->dato.edad);
     printf("\tLEGAJO: %i", lista->dato.legajo);
 }
 
@@ -259,9 +266,9 @@ nodoArbol* buscarDatoArbol (nodoArbol* arbol,int legajo)
         else
         {
             if(legajo >= arbol->dato.legajo)
-               rta= buscarDatoArbol(arbol->derec, legajo);
+                rta= buscarDatoArbol(arbol->derec, legajo);
             else
-               rta= buscarDatoArbol(arbol->izq, legajo);
+                rta= buscarDatoArbol(arbol->izq, legajo);
         }
     }
 
@@ -283,9 +290,9 @@ nodoArbol* buscarDatoArbolPorNombre (nodoArbol* arbol,char nombre[])
         else
         {
             if(strcmp(nombre,arbol->dato.nombre)<0)
-               rta= buscarDatoArbolPorNombre(arbol->derec, nombre);
+                rta= buscarDatoArbolPorNombre(arbol->derec, nombre);
             else
-               rta= buscarDatoArbolPorNombre(arbol->izq, nombre);
+                rta= buscarDatoArbolPorNombre(arbol->izq, nombre);
         }
     }
 
@@ -310,11 +317,11 @@ int alturaArbol (nodoArbol* arbol)
     }
 
     if(rta<rta2)
-    rta=rta2;
- 
+        rta=rta2;
 
 
-return rta;
+
+    return rta;
 }
 
 int cantDeNodo (nodoArbol* arbol)
@@ -330,7 +337,7 @@ int cantDeNodo (nodoArbol* arbol)
         rta= rta+cantDeNodo(arbol->derec)+ cantDeNodo(arbol->izq);
     }
 
-return rta;
+    return rta;
 }
 
 
@@ -353,4 +360,67 @@ int cantHojas (nodoArbol* arbol)
 
     return i ;
 }
+
+
+nodoArbol* borrarHojas (nodoArbol* arbol,int nodoBorrar)
+{
+    if(arbol!=NULL)
+    {
+        nodoArbol* aux= arbol;
+        if(arbol->dato.legajo == nodoBorrar && arbol->derec== NULL && arbol->izq==NULL)
+        {
+            free(aux);
+
+        }
+        if(arbol->dato.legajo < nodoBorrar)
+            arbol->derec = borrarHojas(arbol->derec, nodoBorrar);
+        else
+            arbol->izq = borrarHojas(arbol->izq, nodoBorrar);
+    }
+
+    return arbol;
+}
+
+
+nodoArbol* borrarNodo(nodoArbol* arbol, int borrar)
+{
+    if(arbol->dato.legajo == borrar)
+    {
+        nodoArbol* aux = arbol;
+        if(arbol->derec == NULL && arbol->izq == NULL) //nodo hoja (sin hijos)
+        {
+            free(aux);
+            arbol = NULL;
+        }
+        else if (arbol->izq != NULL && arbol->derec == NULL) // solo un hijo
+        {
+            arbol = arbol->izq;
+            free(aux);
+        }
+        else if(arbol->izq == NULL && arbol->derec != NULL) // solo un hijo
+        {
+            arbol = arbol->derec;
+            free(aux);
+        }
+        else if(arbol->izq != NULL && arbol->derec != NULL) //dos hijos
+        {
+            aux = nodoMasIzquierda(arbol->derec, aux); //busco al nodo mas izquierda DE LA DERECHA o el nodo mas derecha DE LA IZQUIERDA. Siempre el mas cercano al centro
+            arbol->dato.legajo = borrar;
+            arbol->derec = borrarNodo(arbol->derec, borrar);
+        }
+    }
+return arbol;
+}
+
+nodoArbol* nodoMasIzquierda(nodoArbol* arbol, nodoArbol* aux)
+{
+    if(arbol->izq!=NULL)
+    {
+        aux=arbol->izq;
+        aux= nodoMasIzquierda(arbol->izq, aux);
+    }
+
+return aux;
+}
+
 
